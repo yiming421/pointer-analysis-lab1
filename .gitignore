@@ -1,9 +1,43 @@
 # macOS hidden file
 .DS_Store
+
+# Gradle
 .gradle/
-.idea/
-bin/
 build/
+gradle-app.setting
+!gradle-wrapper.jar
+
+# IDE
+.idea/
+*.iml
+.vscode/
+*.swp
+*.swo
+*~
+
+# Build outputs
+bin/
 cache/
 out/
 output/
+
+# Analysis results
+result.txt
+*.txt
+!expected/*.txt
+
+# Logs
+*.log
+
+# OS
+Thumbs.db
+
+# Java
+*.class
+*.jar
+!gradle-wrapper.jar
+hs_err_pid*
+
+# Temporary files
+*.tmp
+*.bak
