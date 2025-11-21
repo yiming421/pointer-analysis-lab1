@@ -24,6 +24,7 @@ package pascal.taie.ir.stmt;
 
 import pascal.taie.ir.exp.FieldAccess;
 import pascal.taie.ir.exp.InstanceFieldAccess;
+import pascal.taie.ir.exp.LValue;
 import pascal.taie.ir.exp.Var;
 
 /**

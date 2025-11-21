@@ -56,4 +56,5 @@ public class InstanceFieldAccess extends FieldAccess {
     public String toString() {
         return base + "." + fieldRef;
     }
+
 }

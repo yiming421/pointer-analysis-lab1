@@ -44,4 +44,5 @@ public abstract class FieldAccess implements LValue, RValue {
     public Type getType() {
         return fieldRef.getType();
     }
+
 }
