@@ -96,7 +96,11 @@ public class PreprocessResult {
                     this.alloc((New) stmt, id);
                     id = 0;
                 }
-            }
+                else {
+                int autoId = -Math.abs(stmt.hashCode());
+                this.alloc((New) stmt, autoId);
+                }
+            }   
         }
     }
 }

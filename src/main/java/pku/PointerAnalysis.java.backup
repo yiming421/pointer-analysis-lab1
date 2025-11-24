@@ -1,24 +1,15 @@
 package pku;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.Map;
-import java.util.Queue;
-import java.util.Set;
-import java.util.TreeSet;
-
 import pascal.taie.World;
 import pascal.taie.config.AnalysisConfig;
 import pascal.taie.ir.IR;
+import pascal.taie.ir.stmt.*;
+import pascal.taie.ir.exp.Var;
 import pascal.taie.ir.exp.FieldAccess;
 import pascal.taie.ir.exp.InstanceFieldAccess;
-import pascal.taie.ir.exp.Var;
-import pascal.taie.ir.stmt.Copy;
-import pascal.taie.ir.stmt.LoadField;
-import pascal.taie.ir.stmt.New;
-import pascal.taie.ir.stmt.Stmt;
-import pascal.taie.ir.stmt.StoreField;
+import pascal.taie.ir.exp.StaticFieldAccess;
+
+import java.util.*;
 
 /**
  * Pointer Analysis Implementation - Phase 2
@@ -85,7 +76,7 @@ public class PointerAnalysis extends PointerAnalysisTrivial {
         }
 
         public static int getStaticObjId(String fieldName) {
-            return STATIC_OBJ_ID;
+            return STATIC_OBJ_ID; // 所有静态字段统一一个 id
         }
     }
 
@@ -108,6 +99,7 @@ public class PointerAnalysis extends PointerAnalysisTrivial {
             }
 
             if (changed) {
+                // 简化处理：重新加入所有语句
                 worklist.addAll(ir.getStmts());
             }
         }
@@ -133,8 +125,8 @@ public class PointerAnalysis extends PointerAnalysisTrivial {
 
     /** Handle: x.f = y or T.f = y */
     private boolean handleStoreField(StoreField stmt, PointsToSetManager ptsManager, FieldPtsManager fieldPtsManager) {
-        FieldAccess lvalue = stmt.getFieldAccess();
-        Var value = stmt.getRValue();
+        FieldAccess lvalue = stmt.getFieldAccess(); // 左值
+        Var value = stmt.getRValue();               // 右值
 
         Var base = null;
         String fieldName = lvalue.getFieldRef().getName();
@@ -146,12 +138,11 @@ public class PointerAnalysis extends PointerAnalysisTrivial {
         Set<Integer> valuePts = ptsManager.getPts(value);
         boolean changed = false;
 
-        if (base != null) {
-            Set<Integer> basePts = ptsManager.getPts(base);
-            for (Integer objId : basePts) {
+        if (base != null) { // 实例字段
+            for (Integer objId : ptsManager.getPts(base)) {
                 changed |= fieldPtsManager.addFieldPts(objId, fieldName, valuePts);
             }
-        } else {
+        } else { // 静态字段
             int staticObjId = FieldPtsManager.getStaticObjId(fieldName);
             changed |= fieldPtsManager.addFieldPts(staticObjId, fieldName, valuePts);
         }
@@ -173,12 +164,11 @@ public class PointerAnalysis extends PointerAnalysisTrivial {
 
         Set<Integer> newPts = new HashSet<>();
 
-        if (base != null) {
-            Set<Integer> basePts = ptsManager.getPts(base);
-            for (Integer objId : basePts) {
+        if (base != null) { // 实例字段
+            for (Integer objId : ptsManager.getPts(base)) {
                 newPts.addAll(fieldPtsManager.getFieldPts(objId, fieldName));
             }
-        } else {
+        } else { // 静态字段
             int staticObjId = FieldPtsManager.getStaticObjId(fieldName);
             newPts.addAll(fieldPtsManager.getFieldPts(staticObjId, fieldName));
         }
