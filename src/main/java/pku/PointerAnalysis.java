@@ -52,14 +52,14 @@ public class PointerAnalysis extends PointerAnalysisTrivial {
             });
         });
             // 打印对象分配信息
-        System.out.println("=== Object Allocation Info ===");
+        //System.out.println("=== Object Allocation Info ===");
         preprocess.obj_ids.forEach((stmt, objId) -> {
             if (stmt instanceof New) {
                 New newStmt = (New) stmt;
                 System.out.println("Object " + objId + " allocated at: " + newStmt);
             }
         });
-        System.out.println("=== End Object Allocation Info ===");
+        //System.out.println("=== End Object Allocation Info ===");
 
         // Step 2: Create managers
         PointsToSetManager ptsManager = new PointsToSetManager();
@@ -314,12 +314,12 @@ public class PointerAnalysis extends PointerAnalysisTrivial {
         boolean changed = false;
 
         // Field诊断：只对特定测试用例输出
-        if (stmt.toString().contains("Field")) {
-            System.out.println("FIELD_STORE: " + stmt);
-            System.out.println("  Base: " + base + " -> " + (base != null ? ptsManager.getPts(base) : "null"));
-            System.out.println("  Value: " + value + " -> " + valuePts);
-            System.out.println("  Field: " + fieldName);
-        }
+        //if (stmt.toString().contains("Field")) {
+            //System.out.println("FIELD_STORE: " + stmt);
+            //System.out.println("  Base: " + base + " -> " + (base != null ? ptsManager.getPts(base) : "null"));
+            //System.out.println("  Value: " + value + " -> " + valuePts);
+            //System.out.println("  Field: " + fieldName);
+        //}
 
         if (base != null) {
             Set<Integer> basePts = ptsManager.getPts(base);
@@ -327,9 +327,9 @@ public class PointerAnalysis extends PointerAnalysisTrivial {
                 changed |= fieldPtsManager.addFieldPts(objId, fieldName, valuePts);
                 
                 // Field诊断
-                if (stmt.toString().contains("Field")) {
-                    System.out.println("  Stored to obj " + objId + "." + fieldName + ": " + valuePts);
-                }
+                //if (stmt.toString().contains("Field")) {
+                //    System.out.println("  Stored to obj " + objId + "." + fieldName + ": " + valuePts);
+                //}
             }
         } else {
             int staticObjId = FieldPtsManager.getStaticObjId(fieldName);
@@ -354,11 +354,11 @@ public class PointerAnalysis extends PointerAnalysisTrivial {
         Set<Integer> newPts = new HashSet<>();
 
         // Field诊断：只对特定测试用例输出
-        if (stmt.toString().contains("Field")) {
-            System.out.println("FIELD_LOAD: " + stmt);
-            System.out.println("  Base: " + base + " -> " + (base != null ? ptsManager.getPts(base) : "null"));
-            System.out.println("  LHS: " + lhs);
-        }
+       // if (stmt.toString().contains("Field")) {
+        //    System.out.println("FIELD_LOAD: " + stmt);
+        //    System.out.println("  Base: " + base + " -> " + (base != null ? ptsManager.getPts(base) : "null"));
+        //    System.out.println("  LHS: " + lhs);
+        //}
 
         if (base != null) {
             Set<Integer> basePts = ptsManager.getPts(base);
@@ -367,9 +367,9 @@ public class PointerAnalysis extends PointerAnalysisTrivial {
                 newPts.addAll(fieldPts);
                 
                 // Field诊断
-                if (stmt.toString().contains("Field")) {
-                    System.out.println("  Loaded from obj " + objId + "." + fieldName + ": " + fieldPts);
-                }
+                //if (stmt.toString().contains("Field")) {
+                //    System.out.println("  Loaded from obj " + objId + "." + fieldName + ": " + fieldPts);
+                //}
             }
         } else {
             int staticObjId = FieldPtsManager.getStaticObjId(fieldName);
@@ -377,9 +377,9 @@ public class PointerAnalysis extends PointerAnalysisTrivial {
         }
 
         // Field诊断
-        if (stmt.toString().contains("Field")) {
-            System.out.println("  Result: " + lhs + " -> " + newPts);
-        }
+        //if (stmt.toString().contains("Field")) {
+        //    System.out.println("  Result: " + lhs + " -> " + newPts);
+        //}
 
         return ptsManager.addAllPointsTo(lhs, newPts);
     }
